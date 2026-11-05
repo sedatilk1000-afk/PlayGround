@@ -261,7 +261,7 @@ export class CourtroomScene {
     ctx.fillRect(0, 232, W, 30);
     ctx.fillStyle = '#3a271b';
     ctx.fillRect(0, 232, W, 3);
-    this.text(ctx, 'IN THE COURT OF RECORD', 320, 116, 7, '#7c5a36', 'Press Start 2P, monospace', 'center');
+    this.text(ctx, 'ADALET SALONUNDA', 320, 116, 7, '#7c5a36', 'Press Start 2P, monospace', 'center');
   }
 
   drawWindows(ctx, t) {
@@ -514,7 +514,7 @@ export class CourtroomScene {
     ctx.fillRect(199, 212, 54, 10);
     ctx.fillStyle = '#6e552c';
     ctx.fillRect(200, 213, 52, 1);
-    this.text(ctx, 'THE ACCUSED', 226, 218, 4.5, '#2b1c0f', 'Press Start 2P, monospace', 'center');
+    this.text(ctx, 'SANIK', 226, 218, 4.5, '#2b1c0f', 'Press Start 2P, monospace', 'center');
   }
 
   drawWitnessStand(ctx) {
@@ -549,7 +549,7 @@ export class CourtroomScene {
     ctx.fillRect(464, 216, 52, 11);
     ctx.fillStyle = '#a9874d';
     ctx.fillRect(465, 217, 50, 9);
-    this.text(ctx, 'WITNESS', 490, 223, 4.5, '#2b1c0f', 'Press Start 2P, monospace', 'center');
+    this.text(ctx, 'TANIK', 490, 223, 4.5, '#2b1c0f', 'Press Start 2P, monospace', 'center');
   }
 
   drawEmptyDock(ctx) {
@@ -979,8 +979,8 @@ export class CourtroomScene {
     ctx.fillStyle = '#6c5128';
     ctx.fillRect(267, 325, 106, 1);
     ctx.fillStyle = '#2b1c0d';
-    this.text(ctx, 'THE HONORABLE', 320, 305, 4.5, '#2b1c0d', 'Press Start 2P, monospace', 'center');
-    this.text(ctx, 'JUDGE', 320, 318, 9, '#241708', 'Press Start 2P, monospace', 'center');
+    this.text(ctx, 'SAYIN', 320, 305, 4.5, '#2b1c0d', 'Press Start 2P, monospace', 'center');
+    this.text(ctx, 'HÂKİM', 320, 318, 9, '#241708', 'Press Start 2P, monospace', 'center');
     ctx.fillStyle = '#6c5128';
     ctx.fillRect(279, 312, 82, 1);
 

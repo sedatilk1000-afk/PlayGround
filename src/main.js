@@ -273,7 +273,7 @@ const scene = new CourtroomScene(el.scene);
 scene.start();
 const audio = new CourtAudio();
 
-const RECORD_KEY = 'justiceChamberRecord.v1';
+const RECORD_KEY = 'adaletSalonuRekor.v1';
 const SOUND_KEY = 'justiceChamberSound';
 const START = { justice: 40, reputation: 70 };
 
@@ -310,7 +310,7 @@ function boot() {
   const saved = loadRecord();
   if (saved) {
     el.bestLine.hidden = false;
-    el.bestLine.textContent = `Best on record: ${saved.rank} · Justice ${saved.justice} · Reputation ${saved.reputation} · ${saved.fair} fair rulings`;
+    el.bestLine.textContent = `En iyi derece: ${saved.rank} · Adalet ${saved.justice} · İtibar ${saved.reputation} · ${saved.fair} adil karar`;
   }
   const soundPref = localStorage.getItem(SOUND_KEY);
   const soundOn = soundPref !== 'off';
@@ -380,7 +380,7 @@ function startGame() {
   updateTrack();
   renderRecord();
   loadCase(0);
-  setTimeout(() => showToast(`Case 01 · ${CASES[0].title}`, 2800), 500);
+  setTimeout(() => showToast(`Dava 01 · ${CASES[0].title}`, 2800), 500);
 }
 
 function loadCase(index) {
@@ -408,7 +408,7 @@ function loadCase(index) {
   el.caseCounter.innerHTML = `${pad(index + 1)}<i>/${pad(CASES.length)}</i>`;
   el.caseTitle.textContent = c.title;
   el.caseCharge.textContent = c.charge;
-  el.casePlea.textContent = 'Plea · Not guilty';
+  el.casePlea.textContent = 'Savunma · Suçsuz';
   el.defName.textContent = c.defendant.name;
   el.defMeta.textContent = `${c.defendant.age} · ${c.defendant.occupation}`;
   el.caseSummary.textContent = c.summary;
@@ -421,12 +421,12 @@ function loadCase(index) {
   el.evidenceSub.textContent = c.evidence.subtitle;
   el.evidenceDetail.textContent = c.evidence.detail;
   el.evidenceIcon.innerHTML = iconSvg(c.evidence.icon);
-  el.evidenceCard.setAttribute('aria-label', `Inspect exhibit ${c.evidence.exhibit}: ${c.evidence.title}`);
+  el.evidenceCard.setAttribute('aria-label', `Delil ${c.evidence.exhibit} — ${c.evidence.title}. İncelemek için aç.`);
 
   drawPortrait(el.portrait, c.defendant.look);
   scene.setCase(c);
   scene.resetGavel();
-  el.sceneStatus.innerHTML = '<i class="caption-dot"></i> Defendant at the stand';
+  el.sceneStatus.innerHTML = '<i class="caption-dot"></i> Sanık kürsüde';
 
   resetControls();
   updateTrack();
@@ -445,7 +445,7 @@ function chooseVerdict(verdict) {
 function chooseSentence(sentence) {
   if (state.locked || state.ended) return;
   if (state.verdict !== 'guilty') {
-    warn('Choose a guilty verdict before setting a sentence.');
+    warn('Ceza belirlemeden önce suçlu kararını seç.');
     return;
   }
   if (!SENTENCE_META[sentence]) return;
@@ -468,7 +468,7 @@ function resetControls() {
   });
   el.confirmBtn.disabled = true;
   el.verdictHint.className = 'verdict-hint';
-  el.verdictHint.textContent = 'Weigh the testimony, then choose a verdict.';
+  el.verdictHint.textContent = 'Delilleri tart, sonra kararını ver.';
   el.actionDock.hidden = false;
   el.resultPanel.hidden = true;
 }
@@ -485,10 +485,10 @@ function updateControls() {
     btn.setAttribute('aria-pressed', String(active));
   });
 
-  let hint = 'Weigh the testimony, then choose a verdict.';
-  if (guilty && !state.sentence) hint = 'Guilty. Now set a sentence for the accused.';
-  else if (guilty && state.sentence) hint = `Guilty · ${SENTENCE_META[state.sentence].label}. Ready to rule.`;
-  else if (state.verdict === 'innocent') hint = 'Not guilty — the accused walks free. Ready to rule.';
+  let hint = 'Delilleri tart, sonra kararını ver.';
+  if (guilty && !state.sentence) hint = 'Suçlu. Şimdi sanık için cezayı belirle.';
+  else if (guilty && state.sentence) hint = `Suçlu · ${SENTENCE_META[state.sentence].label}. Karar vermeye hazırsın.`;
+  else if (state.verdict === 'innocent') hint = 'Beraat — sanık özgür kalır. Karar vermeye hazırsın.';
 
   el.verdictHint.className = 'verdict-hint';
   el.verdictHint.textContent = hint;
@@ -498,11 +498,11 @@ function updateControls() {
 function attemptConfirm() {
   if (state.locked || state.ended) return;
   if (!state.verdict) {
-    warn('First, choose a verdict: Guilty or Not Guilty.');
+    warn('Önce bir karar seç: Suçlu ya da Beraat.');
     return;
   }
   if (state.verdict === 'guilty' && !state.sentence) {
-    warn('A guilty verdict requires a sentence. Choose Fine, 1 Year, or 10 Years.');
+    warn('Suçlu kararı için ceza gerekir. Para Cezası, 1 Yıl veya 10 Yıl seç.');
     el.sentenceRow.classList.remove('shake');
     void el.sentenceRow.offsetWidth;
     el.sentenceRow.classList.add('shake');
@@ -537,8 +537,8 @@ function deliverVerdict() {
   el.guiltyBtn.disabled = true;
   el.innocentBtn.disabled = true;
   el.sentenceBtns.forEach((b) => (b.disabled = true));
-  el.sceneStatus.innerHTML = '<i class="caption-dot"></i> The court is ruling…';
-  el.verdictHint.textContent = 'The gavel is raised…';
+  el.sceneStatus.innerHTML = '<i class="caption-dot"></i> Mahkeme kararını veriyor…';
+  el.verdictHint.textContent = 'Hâkim tokmağı havada…';
 
   const verdict = state.verdict;
   const sentence = state.sentence;
@@ -551,6 +551,7 @@ function deliverVerdict() {
     audio.gavel();
     showStamp(verdict, sentence);
     audio.stamp();
+    audio.verdict(verdictCorrect && sentenceCorrect);
     const timer = setTimeout(() => {
       if (runId !== state.runId || state.index !== caseIndex || !state.locked) return;
       showResult({ verdict, sentence, verdictCorrect, sentenceCorrect, caseData: c });
@@ -562,9 +563,9 @@ function deliverVerdict() {
 function showStamp(verdict, sentence) {
   el.stamp.classList.remove('guilty', 'innocent', 'show');
   el.stamp.classList.add(verdict);
-  el.stampText.textContent = verdict === 'guilty' ? 'Guilty' : 'Not Guilty';
+  el.stampText.textContent = verdict === 'guilty' ? 'Suçlu' : 'Beraat';
   el.stampSentence.textContent =
-    verdict === 'guilty' && sentence ? `Sentence · ${SENTENCE_META[sentence].label}` : 'Acquitted of all charges';
+    verdict === 'guilty' && sentence ? `Ceza · ${SENTENCE_META[sentence].label}` : 'Tüm suçlamalardan beraat';
   void el.stamp.offsetWidth;
   el.stamp.classList.add('show');
 }
@@ -599,26 +600,26 @@ function showResult({ verdict, sentence, verdictCorrect, sentenceCorrect, caseDa
 
   if (fair) {
     category = 'fair';
-    tag = 'Fair ruling';
+    tag = 'Adil karar';
     state.fairStreak += 1;
     justiceGain = 5 + Math.min(state.fairStreak - 1, 2);
     reputationGain = 4;
     state.fairRulings += 1;
   } else if (verdictCorrect) {
     category = 'partial';
-    tag = 'Just verdict · unjust sentence';
+    tag = 'Doğru karar · adaletsiz ceza';
     state.fairStreak = 0;
     justiceGain = 2;
     reputationGain = -3;
     const order = { fine: 0, year1: 1, year10: 2 };
     const tooHarsh = order[sentence] > order[c.sentence];
-    const properSentence = { fine: 'a fine', year1: 'one year', year10: 'ten years' }[c.sentence];
+    const properSentence = { fine: 'para cezası', year1: 'bir yıl', year10: 'on yıl' }[c.sentence];
     sentenceNote = tooHarsh
-      ? `The verdict was right, but the sentence was heavier than the guidelines allow. Justice is not served by excess. The court record calls for ${properSentence}.`
-      : `The verdict was right, but the sentence was too lenient for the harm done. The court record calls for ${properSentence}.`;
+      ? `Karar doğruydu, ancak verilen ceza yönergelerin izin verdiğinden daha ağırdı. Aşırılık adalete hizmet etmez. Mahkeme kaydına göre verilmesi gereken ceza: ${properSentence}.`
+      : `Karar doğruydu, ancak verilen ceza işlenen zarar karşısında çok hafif kaldı. Mahkeme kaydına göre verilmesi gereken ceza: ${properSentence}.`;
   } else {
     category = 'wrong';
-    tag = c.truth === 'guilty' ? 'Wrongful acquittal' : 'Wrongful conviction';
+    tag = c.truth === 'guilty' ? 'Hatalı beraat' : 'Hatalı mahkumiyet';
     state.fairStreak = 0;
     justiceGain = -4;
     reputationGain = -12;
@@ -640,8 +641,8 @@ function showResult({ verdict, sentence, verdictCorrect, sentenceCorrect, caseDa
   updateNextLabel();
 
   el.resultTag.textContent = tag;
-  el.resultCase.textContent = `Case ${pad(state.index + 1)}`;
-  const verdictLabel = verdict === 'guilty' ? 'Guilty' : 'Not Guilty';
+  el.resultCase.textContent = `Dava ${pad(state.index + 1)}`;
+  const verdictLabel = verdict === 'guilty' ? 'Suçlu' : 'Beraat';
   const sentenceLabel = verdict === 'guilty' && sentence ? ` · ${SENTENCE_META[sentence].label}` : '';
   el.resultTitle.textContent = `${verdictLabel}${sentenceLabel}`;
   el.resultExplanation.textContent = c.explanation;
@@ -654,19 +655,19 @@ function showResult({ verdict, sentence, verdictCorrect, sentenceCorrect, caseDa
   }
 
   el.deltaRow.innerHTML = '';
-  addDelta(appliedJ, 'justice');
-  addDelta(appliedR, 'reputation');
+  addDelta(appliedJ, 'adalet');
+  addDelta(appliedR, 'itibar');
   if (category === 'fair' && state.fairStreak > 1) {
-    addDeltaText(`Fair streak ×${state.fairStreak}`, 'neutral');
+    addDeltaText(`Adil seri ×${state.fairStreak}`, 'neutral');
   }
   if (category === 'wrong') {
-    addDeltaText(c.truth === 'guilty' ? 'Guilty party set free' : 'Innocent party convicted', 'down');
+    addDeltaText(c.truth === 'guilty' ? 'Suçlu serbest kaldı' : 'Masum mahkûm edildi', 'down');
   }
   if (category === 'partial') {
-    addDeltaText('Sentence out of guidelines', 'neutral');
+    addDeltaText('Ceza yönergelere aykırı', 'neutral');
   }
   if (state.reputation <= 0) {
-    addDeltaText('Reputation collapsed', 'down');
+    addDeltaText('İtibar çöktü', 'down');
   }
 
   el.resultPanel.className = `result-panel ${category === 'fair' ? 'good' : category === 'wrong' ? 'bad' : 'partial'}`;
@@ -674,15 +675,13 @@ function showResult({ verdict, sentence, verdictCorrect, sentenceCorrect, caseDa
   el.actionDock.hidden = true;
   revealResult();
 
-  el.sceneStatus.innerHTML = `<i class="caption-dot"></i> ${verdictLabel}${sentenceLabel} · case closed`;
-  showToast('Case closed · the record is sealed', 2400);
-  if (category === 'fair') audio.correct();
-  else audio.wrong();
+  el.sceneStatus.innerHTML = `<i class="caption-dot"></i> ${verdictLabel}${sentenceLabel} · dava kapandı`;
+  showToast('Dava kapandı · kayıt mühürlendi', 2400);
 }
 
 function addDelta(amount, type) {
   if (amount === 0) {
-    addDeltaText(`${type} unchanged`, 'neutral');
+    addDeltaText(`${type} değişmedi`, 'neutral');
     return;
   }
   const label = `${amount > 0 ? '+' : '−'}${Math.abs(amount)} ${type}`;
@@ -710,16 +709,16 @@ function nextCase() {
   }
   const next = state.index + 1;
   loadCase(next);
-  showToast(`Case ${pad(next + 1)} · ${CASES[next].title}`, 2800);
+  showToast(`Dava ${pad(next + 1)} · ${CASES[next].title}`, 2800);
 }
 
 function updateNextLabel() {
   if (state.reputation <= 0) {
-    el.nextBtn.querySelector('span').textContent = 'Face the inquiry';
+    el.nextBtn.querySelector('span').textContent = 'Soruşturmayla yüzleş';
   } else if (state.index >= CASES.length - 1) {
-    el.nextBtn.querySelector('span').textContent = 'Seal the record';
+    el.nextBtn.querySelector('span').textContent = 'Kaydı mühürle';
   } else {
-    el.nextBtn.querySelector('span').textContent = 'Next case';
+    el.nextBtn.querySelector('span').textContent = 'Sonraki dava';
   }
 }
 
@@ -750,8 +749,8 @@ function buildTrack() {
     const item = document.createElement('span');
     item.className = 'track-item';
     item.textContent = pad(i + 1);
-    item.title = `Case ${pad(i + 1)} · ${c.title}`;
-    item.setAttribute('aria-label', `Case ${i + 1}: ${c.title}`);
+    item.title = `Dava ${pad(i + 1)} · ${c.title}`;
+    item.setAttribute('aria-label', `Dava ${i + 1}: ${c.title}`);
     el.trackItems.appendChild(item);
   });
 }
@@ -776,19 +775,19 @@ function updateTrack() {
       item.classList.add('current');
     }
     const c = CASES[i];
-    const label = result === 'fair' ? 'fair ruling' : result === 'partial' ? 'unjust sentence' : result === 'wrong' ? 'wrong ruling' : 'not yet heard';
-    item.title = `Case ${pad(i + 1)} · ${c.title} · ${label}`;
+    const label = result === 'fair' ? 'adil karar' : result === 'partial' ? 'adaletsiz ceza' : result === 'wrong' ? 'yanlış karar' : 'henüz görülmedi';
+    item.title = `Dava ${pad(i + 1)} · ${c.title} · ${label}`;
   });
-  el.trackProgress.textContent = `${done} / ${CASES.length} ruled`;
+  el.trackProgress.textContent = `${done} / ${CASES.length} karar`;
 }
 
 function renderRecord() {
   if (!state.history.length) {
-    el.recordList.innerHTML = '<p class="record-empty">The docket awaits its first judgment.</p>';
-    el.recordCount.textContent = 'No rulings yet';
+    el.recordList.innerHTML = '<p class="record-empty">Dosya ilk kararını bekliyor.</p>';
+    el.recordCount.textContent = 'Henüz karar yok';
     return;
   }
-  el.recordCount.textContent = `${state.history.length} of ${CASES.length} ruled`;
+  el.recordCount.textContent = `${state.history.length} / ${CASES.length} karar verildi`;
   el.recordList.innerHTML = '';
   const recent = [...state.history].reverse().slice(0, 3);
   recent.forEach((entry, i) => {
@@ -797,9 +796,9 @@ function renderRecord() {
     row.className = `record-entry ${entry.category}`;
     const verdictLabel =
       entry.verdict === 'guilty'
-        ? `Guilty · ${SENTENCE_META[entry.sentence]?.short || '—'}`
-        : 'Not guilty';
-    const statusLabel = entry.category === 'fair' ? 'Fair' : entry.category === 'partial' ? 'Sentence' : 'Wrong';
+        ? `Suçlu · ${SENTENCE_META[entry.sentence]?.short || '—'}`
+        : 'Beraat';
+    const statusLabel = entry.category === 'fair' ? 'Adil' : entry.category === 'partial' ? 'Ceza' : 'Yanlış';
     row.innerHTML = `
       <span class="record-no">${pad(index + 1)}</span>
       <span class="record-body"><strong></strong><span>${verdictLabel}</span></span>
@@ -836,9 +835,9 @@ function endGame() {
         correct: state.correctVerdicts,
       };
       saveRecord(record);
-      bestText = '✦ A new record for this court.';
+      bestText = '✦ Bu mahkeme için yeni bir rekor.';
     } else {
-      bestText = `Best on record: ${saved.rank} · Justice ${saved.justice} · Reputation ${saved.reputation}`;
+      bestText = `En iyi derece: ${saved.rank} · Adalet ${saved.justice} · İtibar ${saved.reputation}`;
     }
   }
   el.finalBest.textContent = bestText;
@@ -851,8 +850,8 @@ function endGame() {
 function getRank(removed) {
   if (removed) {
     return {
-      title: 'Removed from the Bench',
-      blurb: 'The city has lost faith in your judgment. The governor signs the order; the gavel is taken from your hand.',
+      title: 'Görevden Alındı',
+      blurb: 'Şehir senin kararlarına olan güvenini yitirdi. Vali emri imzalar; tokmak elinden alınır.',
       color: '#8c3128',
       tier: 0,
     };
@@ -861,39 +860,39 @@ function getRank(removed) {
   const rep = state.reputation;
   if (fair >= 9 && rep >= 80) {
     return {
-      title: 'Supreme Justice',
-      blurb: 'Your rulings will be studied for a century. The scales never wavered, and mercy never blinded you to the truth.',
+      title: 'Yüce Hâkim',
+      blurb: 'Kararların yüzyıl boyunca incelenecek. Terazi hiç şaşmadı, merhamet seni gerçeğe karşı kör etmedi.',
       color: '#b08b3f',
       tier: 4,
     };
   }
   if (fair >= 7) {
     return {
-      title: 'Honorable Judge',
-      blurb: 'The city trusts your gavel. You weighed evidence above appetite, and mercy above haste.',
+      title: 'Saygın Hâkim',
+      blurb: 'Şehir tokmağına güveniyor. Delilleri arzuların üstünde, merhameti aceleci hükmün üstünde tuttun.',
       color: '#9c743b',
       tier: 3,
     };
   }
   if (fair >= 5) {
     return {
-      title: 'Circuit Judge',
-      blurb: 'A steady hand, though the record shows moments of doubt. The bench endures — for now.',
+      title: 'Bölge Hâkimi',
+      blurb: 'Sağlam bir el, ama kayıt bazı tereddüt anlarını gösteriyor. Kürsü ayakta — şimdilik.',
       color: '#7e6a4a',
       tier: 2,
     };
   }
   if (fair >= 3) {
     return {
-      title: 'Magistrate',
-      blurb: 'You kept order, but not always justice. The docket remembers every hurried ruling.',
+      title: 'Sulh Hâkimi',
+      blurb: 'Düzeni sağladın, ama her zaman adaleti değil. Dosya, aceleyle verilen her kararı hatırlar.',
       color: '#6e5a3e',
       tier: 1,
     };
   }
   return {
-    title: 'Disgraced Jurist',
-    blurb: 'The gavel fell on the innocent and spared the guilty. The city has lost faith in your court.',
+    title: 'Gözden Düşmüş Hâkim',
+    blurb: 'Tokmak masumların üzerine indi, suçluları bağışladı. Şehir mahkemene olan güvenini yitirdi.',
     color: '#8c3128',
     tier: 0,
   };

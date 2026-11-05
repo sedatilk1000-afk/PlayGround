@@ -151,6 +151,74 @@ export class CourtAudio {
     this.blip(300, 0.03, 0.04, 'square', 180);
   }
 
+  /* Retro approval / rejection cue played as the verdict stamp lands.
+     Fair ruling: bright rising 8-bit chime. Wrong or partial: a low,
+     stuttering "rrrr" buzz. */
+  verdict(approved) {
+    if (!this.ctx || !this.enabled || this.ctx.state !== 'running') return;
+    if (approved) this.verdictApproved();
+    else this.verdictRejected();
+  }
+
+  verdictApproved() {
+    const notes = [
+      [0, 783.99, 0.1],
+      [90, 1046.5, 0.1],
+      [185, 1318.51, 0.24],
+    ];
+    notes.forEach(([delay, freq, length]) => {
+      setTimeout(() => this.blip(freq, 0.075, length, 'square'), delay);
+    });
+    setTimeout(() => this.blip(1567.98, 0.038, 0.18, 'triangle'), 300);
+  }
+
+  verdictRejected() {
+    const ctx = this.ctx;
+    const t = ctx.currentTime + 0.01;
+    const duration = 0.46;
+
+    const gate = ctx.createGain();
+    gate.gain.value = 0.07;
+
+    // 26 Hz square gate turns a steady tone into a rapid "rrrr" rattle.
+    const lfo = ctx.createOscillator();
+    lfo.type = 'square';
+    lfo.frequency.value = 26;
+    const depth = ctx.createGain();
+    depth.gain.value = 0.06;
+    lfo.connect(depth).connect(gate.gain);
+
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.exponentialRampToValueAtTime(1, t + 0.012);
+    env.gain.setValueAtTime(1, t + duration - 0.14);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+
+    const low = ctx.createOscillator();
+    low.type = 'sawtooth';
+    low.frequency.setValueAtTime(112, t);
+    low.frequency.exponentialRampToValueAtTime(74, t + duration);
+
+    const sub = ctx.createOscillator();
+    sub.type = 'square';
+    sub.frequency.setValueAtTime(56, t);
+    sub.frequency.exponentialRampToValueAtTime(37, t + duration);
+
+    const subGain = ctx.createGain();
+    subGain.gain.value = 0.5;
+
+    low.connect(gate);
+    sub.connect(subGain).connect(gate);
+    gate.connect(env).connect(this.master);
+
+    low.start(t);
+    sub.start(t);
+    lfo.start(t);
+    low.stop(t + duration + 0.02);
+    sub.stop(t + duration + 0.02);
+    lfo.stop(t + duration + 0.02);
+  }
+
   correct() {
     if (!this.ctx || !this.enabled) return;
     const notes = [523.25, 659.25, 783.99];

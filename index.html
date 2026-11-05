@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120d0a" />
-  <meta name="description" content="Justice Chamber — a serious pixel-art courtroom judgment game. Read the case, weigh the evidence, and rule fairly." />
-  <title>Justice Chamber — A Courtroom Judgment Game</title>
+  <meta name="description" content="Adalet Salonu — ciddi bir piksel sanat mahkeme karar oyunu. Davayı oku, delilleri tart ve adil bir hüküm ver." />
+  <title>Adalet Salonu — Mahkeme Karar Oyunu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23120d0a'/%3E%3Cpath d='M16 5v20M9 27h14M7 10h18M7 10l-4 8h8l-4-8ZM25 10l-4 8h8l-4-8Z' fill='none' stroke='%23d8b46a' stroke-width='2'/%3E%3C/svg%3E" />
   <link rel="preload" href="assets/fonts/pressstart2p.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/pressstart2p-ext.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/special-elite.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/cinzel-700.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="styles.css" />
@@ -27,8 +28,8 @@
           </svg>
         </div>
         <div class="brand-text">
-          <h1>Justice Chamber</h1>
-          <p>Court of Record · Criminal Division</p>
+          <h1>Adalet Salonu</h1>
+          <p>Adalet Sarayı · Ceza Dairesi</p>
         </div>
       </div>
 
@@ -36,7 +37,7 @@
         <div class="meters">
           <div class="meter meter-justice">
             <div class="meter-head">
-              <span class="meter-label"><i class="pip"></i>Justice Score</span>
+              <span class="meter-label"><i class="pip"></i>Adalet Puanı</span>
               <span class="meter-value" id="justiceVal">50</span>
             </div>
             <div class="meter-track">
@@ -46,7 +47,7 @@
           </div>
           <div class="meter meter-reputation">
             <div class="meter-head">
-              <span class="meter-label"><i class="pip"></i>Reputation</span>
+              <span class="meter-label"><i class="pip"></i>İtibar</span>
               <span class="meter-value" id="reputationVal">70</span>
             </div>
             <div class="meter-track">
@@ -55,11 +56,11 @@
             </div>
           </div>
         </div>
-        <div class="case-count" aria-label="Case number">
-          <span>Case</span>
+        <div class="case-count" aria-label="Dava numarası">
+          <span>Dava</span>
           <strong id="caseCounter">01<i>/10</i></strong>
         </div>
-        <button class="sound-btn" id="soundBtn" type="button" aria-label="Toggle sound" aria-pressed="true">
+        <button class="sound-btn" id="soundBtn" type="button" aria-label="Sesi aç/kapat" aria-pressed="true">
           <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 9.5h4L13 5v14l-5-4.5H4z" />
             <path d="M17 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12" />
@@ -73,64 +74,64 @@
     </header>
 
     <main class="main">
-      <section class="scene-column" aria-label="Courtroom">
+      <section class="scene-column" aria-label="Mahkeme salonu">
         <div class="scene-frame">
-          <canvas id="scene" width="640" height="360" aria-label="Pixel-art courtroom with the accused at the dock and the witness stand"></canvas>
+          <canvas id="scene" width="640" height="360" aria-label="Sanığın kürsüde, tanığın tanık kürsüsünde olduğu piksel sanat mahkeme salonu"></canvas>
           <div class="scene-scanlines" aria-hidden="true"></div>
           <div class="scene-tag">
-            <span class="live-dot"></span> Court in session
-            <span class="tag-sep">/</span> Docket <b id="docketNo">114-B</b>
+            <span class="live-dot"></span> Duruşma açık
+            <span class="tag-sep">/</span> Dosya <b id="docketNo">114-B</b>
           </div>
           <div class="scene-stamp" id="stamp" aria-hidden="true">
-            <small>The court finds</small>
-            <strong id="stampText">Guilty</strong>
-            <span id="stampSentence">Sentence · 1 Year</span>
+            <small>Mahkeme kararı</small>
+            <strong id="stampText">Suçlu</strong>
+            <span id="stampSentence">Ceza · 1 Yıl</span>
           </div>
           <div class="scene-toast" id="sceneToast" role="status" aria-live="polite"></div>
           <div class="scene-caption-bar">
-            <span id="sceneStatus"><i class="caption-dot"></i> Defendant at the stand</span>
-            <span>Judge’s bench · 9:00 a.m.</span>
+            <span id="sceneStatus"><i class="caption-dot"></i> Sanık kürsüde</span>
+            <span>Hâkim kürsüsü · 09.00</span>
           </div>
         </div>
 
         <div class="docket-track">
-          <span class="track-label">The docket</span>
-          <div class="track-items" id="trackItems" aria-label="Case progress"></div>
-          <span class="track-progress" id="trackProgress">0 / 10 ruled</span>
+          <span class="track-label">Dava dosyası</span>
+          <div class="track-items" id="trackItems" aria-label="Dava ilerlemesi"></div>
+          <span class="track-progress" id="trackProgress">0 / 10 karar</span>
         </div>
 
         <div class="bench-notes">
           <div class="creed">
-            <span>The judge’s creed</span>
-            <p>“Let the evidence speak. Let mercy be earned. Let the gavel fall only on the truth.”</p>
+            <span>Hâkimin andı</span>
+            <p>“Deliller konuşsun. Merhamet hak edilsin. Hâkim tokmağı yalnızca gerçeğe insin.”</p>
           </div>
-          <div class="key-legend" aria-label="Keyboard shortcuts">
-            <div><kbd>G</kbd> Guilty</div>
-            <div><kbd>N</kbd> Not guilty</div>
-            <div><kbd>1</kbd>–<kbd>3</kbd> Sentence</div>
-            <div><kbd>↵</kbd> Rule</div>
+          <div class="key-legend" aria-label="Klavye kısayolları">
+            <div><kbd>G</kbd> Suçlu</div>
+            <div><kbd>N</kbd> Beraat</div>
+            <div><kbd>1</kbd>–<kbd>3</kbd> Ceza</div>
+            <div><kbd>↵</kbd> Karar</div>
           </div>
         </div>
 
-        <section class="record-panel" aria-label="Record of proceedings">
+        <section class="record-panel" aria-label="Duruşma tutanağı">
           <div class="record-head">
-            <span>Record of proceedings</span>
-            <b id="recordCount">No rulings yet</b>
+            <span>Duruşma tutanağı</span>
+            <b id="recordCount">Henüz karar yok</b>
           </div>
           <div class="record-list" id="recordList">
-            <p class="record-empty">The docket awaits its first judgment.<span>Fair verdicts raise the Justice Score. Wrong rulings cost reputation.</span></p>
+            <p class="record-empty">Dosya ilk kararını bekliyor.<span>Adil kararlar Adalet Puanı’nı yükseltir. Yanlış kararlar itibar kaybettirir.</span></p>
           </div>
         </section>
       </section>
 
-      <aside class="docket-panel" aria-label="Case file and verdict controls">
+      <aside class="docket-panel" aria-label="Dava dosyası ve karar kontrolleri">
         <div class="docket-scroll" id="docketScroll">
           <div class="docket-heading">
-            <span class="docket-kicker">Case file · <b id="caseNo">01</b> of 10</span>
-            <h2 id="caseTitle">The Stolen Bicycle</h2>
+            <span class="docket-kicker">Dava dosyası · <b id="caseNo">01</b> / 10</span>
+            <h2 id="caseTitle">Çalınan Bisiklet</h2>
             <div class="docket-tags">
-              <span class="charge-tag" id="caseCharge">Petty theft</span>
-              <span class="plea-tag" id="casePlea">Plea · Not guilty</span>
+              <span class="charge-tag" id="caseCharge">Basit Hırsızlık</span>
+              <span class="plea-tag" id="casePlea">Savunma · Suçsuz</span>
             </div>
           </div>
 
@@ -141,22 +142,22 @@
               <span class="portrait-corner bl"></span><span class="portrait-corner br"></span>
             </div>
             <div class="def-info">
-              <span class="def-role">The accused</span>
+              <span class="def-role">Sanık</span>
               <strong id="defName">Tobias Hale</strong>
-              <span class="def-meta" id="defMeta">19 · Bicycle Apprentice</span>
+              <span class="def-meta" id="defMeta">19 · Bisiklet Çırağı</span>
             </div>
-            <div class="case-stamp" aria-hidden="true">Case<br /><b id="caseStampNo">01</b></div>
+            <div class="case-stamp" aria-hidden="true">Dava<br /><b id="caseStampNo">01</b></div>
           </div>
 
           <section class="paper-card case-card">
-            <h3><span class="h3-mark">§</span> The case</h3>
+            <h3><span class="h3-mark">§</span> Dava</h3>
             <p class="case-summary" id="caseSummary"></p>
             <p class="case-claim" id="caseClaim"></p>
           </section>
 
           <div class="evidence-grid">
             <section class="paper-card witness-card">
-              <h3>Witness statement</h3>
+              <h3>Tanık ifadesi</h3>
               <div class="witness-line">
                 <span class="witness-mark" aria-hidden="true">✦</span>
                 <div>
@@ -167,10 +168,10 @@
               <blockquote id="witnessStatement"></blockquote>
             </section>
 
-            <section class="paper-card evidence-card" id="evidenceCard" tabindex="0" role="button" aria-label="Inspect exhibit">
+            <section class="paper-card evidence-card" id="evidenceCard" tabindex="0" role="button" aria-label="Delili incele">
               <div class="evidence-top">
-                <h3>Exhibit <span id="exhibitNo">A</span></h3>
-                <span class="inspect">Inspect <b aria-hidden="true">↗</b></span>
+                <h3>Delil <span id="exhibitNo">A</span></h3>
+                <span class="inspect">İncele <b aria-hidden="true">↗</b></span>
               </div>
               <div class="evidence-body">
                 <div class="exhibit-icon" id="evidenceIcon" aria-hidden="true"></div>
@@ -184,62 +185,62 @@
           </div>
 
           <details class="guidelines" id="guidelines">
-            <summary><span class="gavel-mark" aria-hidden="true">⚖</span> Sentencing guidelines <b>view</b></summary>
+            <summary><span class="gavel-mark" aria-hidden="true">⚖</span> Ceza yönergeleri <b>görüntüle</b></summary>
             <div class="guideline-list">
-              <div><strong>Fine</strong><p>Minor, non-violent offenses. Property under $500. First offense.</p></div>
-              <div><strong>1 Year</strong><p>Theft or fraud of significant value. Damage over $500. Obstruction.</p></div>
-              <div><strong>10 Years</strong><p>Violence. Arson endangering life. Fraud or counterfeiting over $50,000.</p></div>
+              <div><strong>Para Cezası</strong><p>Hafif, şiddet içermeyen suçlar. 500 doların altında kalan malvarlığı. İlk suç.</p></div>
+              <div><strong>1 Yıl</strong><p>Önemli değerde hırsızlık veya dolandırıcılık. 500 doları aşan mal hasarı. Adaleti engelleme.</p></div>
+              <div><strong>10 Yıl</strong><p>Şiddet. Can güvenliğini tehlikeye atan kundakçılık. 50.000 doları aşan dolandırıcılık veya kalpazanlık.</p></div>
             </div>
           </details>
         </div>
 
         <div class="action-dock" id="actionDock">
           <div class="sentence-row" id="sentenceRow">
-            <span class="action-label">Sentence <em>if guilty</em></span>
-            <div class="sentence-options" role="group" aria-label="Sentence length">
+            <span class="action-label">Ceza <em>suçlu bulunursa</em></span>
+            <div class="sentence-options" role="group" aria-label="Ceza süresi">
               <button class="sentence-btn" type="button" data-sentence="fine" disabled>
-                <span>Fine</span><small>minor</small>
+                <span>Para Cezası</span><small>hafif</small>
               </button>
               <button class="sentence-btn" type="button" data-sentence="year1" disabled>
-                <span>1 Year</span><small>serious</small>
+                <span>1 Yıl</span><small>ciddi</small>
               </button>
               <button class="sentence-btn" type="button" data-sentence="year10" disabled>
-                <span>10 Years</span><small>grave</small>
+                <span>10 Yıl</span><small>çok ağır</small>
               </button>
             </div>
           </div>
 
           <div class="verdict-row">
             <button class="verdict-btn guilty" id="guiltyBtn" type="button" aria-pressed="false">
-              <span>Guilty</span>
-              <small>Rule the charge proven</small>
+              <span>Suçlu</span>
+              <small>Suçlamayı kanıtlanmış say</small>
             </button>
             <button class="verdict-btn innocent" id="innocentBtn" type="button" aria-pressed="false">
-              <span>Not guilty</span>
-              <small>Acquit the accused</small>
+              <span>Beraat</span>
+              <small>Sanığı beraat ettir</small>
             </button>
           </div>
 
           <div class="confirm-row">
-            <p class="verdict-hint" id="verdictHint">Weigh the testimony, then choose a verdict.</p>
+            <p class="verdict-hint" id="verdictHint">Delilleri tart, sonra kararını ver.</p>
             <button class="confirm-btn" id="confirmBtn" type="button" disabled>
-              <span>Deliver verdict</span><small>Enter ↵</small>
+              <span>Kararı ver</span><small>Enter ↵</small>
             </button>
           </div>
         </div>
 
         <div class="result-panel" id="resultPanel" role="status" aria-live="polite" hidden>
           <div class="result-head">
-            <span class="result-tag" id="resultTag">Fair ruling</span>
-            <span class="result-case" id="resultCase">Case 01</span>
+            <span class="result-tag" id="resultTag">Adil karar</span>
+            <span class="result-case" id="resultCase">Dava 01</span>
           </div>
-          <h3 id="resultTitle">Guilty · 1 Year</h3>
+          <h3 id="resultTitle">Suçlu · 1 Yıl</h3>
           <p id="resultExplanation"></p>
           <p class="sentence-note" id="sentenceNote" hidden></p>
           <div class="result-foot">
             <div class="delta-row" id="deltaRow"></div>
             <button class="next-btn" id="nextBtn" type="button">
-              <span>Next case</span><small>Enter ↵</small>
+              <span>Sonraki dava</span><small>Enter ↵</small>
             </button>
           </div>
         </div>
@@ -247,8 +248,8 @@
     </main>
 
     <footer class="page-foot">
-      <span>Justice Chamber · A courtroom judgment game</span>
-      <span>Read the record · Weigh the evidence · Rule with honor</span>
+      <span>Adalet Salonu · Bir mahkeme karar oyunu</span>
+      <span>Tutanağı oku · Delilleri tart · Onurla hüküm ver</span>
     </footer>
   </div>
 
@@ -265,22 +266,22 @@
           <path d="M24 56h16" opacity=".6" />
         </svg>
       </div>
-      <p class="intro-eyebrow">A serious pixel-art courtroom simulation</p>
-      <h1>Justice<br /><span>Chamber</span></h1>
+      <p class="intro-eyebrow">Ciddi bir piksel sanat mahkeme simülasyonu</p>
+      <h1>Adalet<br /><span>Salonu</span></h1>
       <div class="intro-rule"><i></i><b>⚜</b><i></i></div>
       <p class="intro-lede">
-        Ten cases come before your bench. Read the charge, weigh the single exhibit against the witness, and pass judgment.
-        The guilty must be sentenced. The innocent must walk free. The record remembers every ruling.
+        Kürsünün önüne on dava gelir. Suçlamayı oku, tek delili tanık ifadesiyle tart ve hükmünü ver.
+        Suçlular cezalandırılmalı, masumlar özgür kalmalı. Tutanak her kararı hatırlar.
       </p>
       <div class="intro-steps">
-        <div><span>01</span><strong>Read</strong><p>The summary, the testimony, the exhibit.</p></div>
-        <div><span>02</span><strong>Weigh</strong><p>Find the contradiction. Follow the truth.</p></div>
-        <div><span>03</span><strong>Rule</strong><p>Deliver a verdict and, if guilty, a sentence.</p></div>
+        <div><span>01</span><strong>Oku</strong><p>Özet, tanık ifadesi ve delil.</p></div>
+        <div><span>02</span><strong>Tart</strong><p>Çelişkiyi bul. Gerçeğin peşinden git.</p></div>
+        <div><span>03</span><strong>Hüküm Ver</strong><p>Kararını ver; suçluysa cezayı belirle.</p></div>
       </div>
       <button class="start-btn" id="startBtn" type="button">
-        <span>Open court</span><small>Begin the docket</small>
+        <span>Duruşmayı aç</span><small>Dosyayı başlat</small>
       </button>
-      <p class="intro-foot">Sound on · Keyboard: <kbd>G</kbd> <kbd>N</kbd> <kbd>1</kbd>–<kbd>3</kbd> <kbd>Enter</kbd></p>
+      <p class="intro-foot">Ses açık · Klavye: <kbd>G</kbd> <kbd>N</kbd> <kbd>1</kbd>–<kbd>3</kbd> <kbd>Enter</kbd></p>
       <p class="best-line" id="bestLine" hidden></p>
     </div>
   </div>
@@ -288,27 +289,27 @@
   <!-- Evidence inspector -->
   <div class="overlay modal" id="evidenceModal" hidden>
     <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button class="modal-close" id="modalClose" type="button" aria-label="Close evidence">×</button>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Delili kapat">×</button>
       <div class="modal-head">
-        <span class="modal-kicker">Exhibit <b id="modalExhibit">A</b> · Case file</span>
-        <h2 id="modalTitle">Pawnshop Bill of Sale</h2>
-        <span class="modal-sub" id="modalSub">Recovered from Bell &amp; Sons Pawn</span>
+        <span class="modal-kicker">Delil <b id="modalExhibit">A</b> · Dava dosyası</span>
+        <h2 id="modalTitle">Rehinci Satış Senedi</h2>
+        <span class="modal-sub" id="modalSub">Bell &amp; Sons Rehinci’den ele geçirildi</span>
       </div>
       <div class="modal-body">
         <div class="modal-icon" id="modalIcon" aria-hidden="true"></div>
         <div class="modal-copy">
           <p id="modalDetail"></p>
-          <div class="modal-stamp" aria-hidden="true">Entered<br /><b>into evidence</b></div>
+          <div class="modal-stamp" aria-hidden="true">Delil olarak<br /><b>sunuldu</b></div>
         </div>
       </div>
-      <button class="modal-return" id="modalReturn" type="button">Return to the bench</button>
+      <button class="modal-return" id="modalReturn" type="button">Kürsüye dön</button>
     </div>
   </div>
 
   <!-- Final judgment -->
   <div class="overlay gameover" id="gameover" hidden>
     <div class="final-sheet">
-      <p class="final-eyebrow">The record is sealed</p>
+      <p class="final-eyebrow">Kayıt mühürlendi</p>
       <div class="final-seal" id="finalSeal" aria-hidden="true">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4">
           <circle cx="32" cy="32" r="30" opacity=".5" />
@@ -317,19 +318,19 @@
           <path d="M15 23 7 38h16L15 23ZM49 23l-8 15h16l-8-15Z" stroke-width="2" />
         </svg>
       </div>
-      <h2 id="finalRank">Honorable Judge</h2>
-      <p class="final-blurb" id="finalBlurb">The city trusts your gavel.</p>
+      <h2 id="finalRank">Saygın Hâkim</h2>
+      <p class="final-blurb" id="finalBlurb">Şehir tokmağına güveniyor.</p>
       <div class="final-stats">
-        <div><span>Final justice</span><strong id="finalJustice">0</strong></div>
-        <div><span>Reputation</span><strong id="finalReputation">0</strong></div>
-        <div><span>Fair rulings</span><strong id="finalFair">0<small>/10</small></strong></div>
-        <div><span>Correct verdicts</span><strong id="finalCorrect">0<small>/10</small></strong></div>
+        <div><span>Adalet puanı</span><strong id="finalJustice">0</strong></div>
+        <div><span>İtibar</span><strong id="finalReputation">0</strong></div>
+        <div><span>Adil kararlar</span><strong id="finalFair">0<small>/10</small></strong></div>
+        <div><span>Doğru kararlar</span><strong id="finalCorrect">0<small>/10</small></strong></div>
       </div>
       <p class="final-best" id="finalBest"></p>
       <button class="start-btn" id="againBtn" type="button">
-        <span>Retake the bench</span><small>Begin a fresh docket</small>
+        <span>Kürsüye dön</span><small>Yeni bir dosya aç</small>
       </button>
-      <p class="final-foot">“The law is reason, free from passion.”</p>
+      <p class="final-foot">“Hukuk, tutkudan arınmış akıldır.”</p>
     </div>
   </div>
 
